@@ -47,12 +47,11 @@ jobs:
           name: Build-WebGL
           path: temp-build
 
-      - name: Create .nojekyll file
+      - name: Move WebGL files to root and setup headers
         run: |
+          mv temp-build/WebGL/* temp-build/
+          rm -rf temp-build/WebGL
           touch temp-build/.nojekyll
-
-      - name: Create _headers file
-        run: |
           echo "/*.br" >> temp-build/_headers
           echo "  Content-Encoding: br" >> temp-build/_headers
           echo "  Content-Type: application/javascript" >> temp-build/_headers
