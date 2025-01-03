@@ -44,11 +44,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Build-WebGL
-          path: dist
+          path: temp-build
+
+      - name: Move files to root
+        run: mv temp-build/WebGL/* temp-build/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: temp-build
           branch: gh-pages
           clean: true
