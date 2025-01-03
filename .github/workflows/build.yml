@@ -32,6 +32,7 @@ jobs:
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+          retention-days: 1
 
   deploy:
     needs: buildForAllSupportedPlatforms
@@ -46,8 +47,15 @@ jobs:
           name: Build-WebGL
           path: temp-build
 
-      - name: Move files to root
-        run: mv temp-build/WebGL/* temp-build/
+      - name: Create .nojekyll file
+        run: |
+          touch temp-build/.nojekyll
+
+      - name: Create _headers file
+        run: |
+          echo "/*.br" >> temp-build/_headers
+          echo "  Content-Encoding: br" >> temp-build/_headers
+          echo "  Content-Type: application/javascript" >> temp-build/_headers
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
