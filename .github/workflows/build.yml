@@ -52,9 +52,16 @@ jobs:
           mv temp-build/WebGL/* temp-build/
           rm -rf temp-build/WebGL
           touch temp-build/.nojekyll
+
+          # Создаем файл _headers с расширенными правилами
           echo "/*.br" >> temp-build/_headers
           echo "  Content-Encoding: br" >> temp-build/_headers
+          echo "/*.js.br" >> temp-build/_headers
           echo "  Content-Type: application/javascript" >> temp-build/_headers
+          echo "/*.data.br" >> temp-build/_headers
+          echo "  Content-Type: application/octet-stream" >> temp-build/_headers
+          echo "/*.wasm.br" >> temp-build/_headers
+          echo "  Content-Type: application/wasm" >> temp-build/_headers
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
