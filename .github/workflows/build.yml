@@ -44,10 +44,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Build-WebGL
-          path: build/WebGL
+          path: dist
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/WebGL
+          folder: dist
           branch: gh-pages
+          clean: true
