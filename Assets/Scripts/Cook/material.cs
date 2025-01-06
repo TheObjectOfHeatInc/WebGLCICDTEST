@@ -25,8 +25,11 @@ public class Material : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("OnTriggerEnter2D");
+      
         if (_plate == null || !_plate.IsReadyForCooking()) return;
+
+        if (!other.CompareTag($"Plate")) return;
+        
         if (_colorChangeCoroutine != null)
         {
             StopCoroutine(_colorChangeCoroutine);
@@ -35,11 +38,7 @@ public class Material : MonoBehaviour
         _colorChangeCoroutine = StartCoroutine(ChangeColorToCooked());
     }
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-      
-    }
-
+    
     private IEnumerator ChangeColorToCooked()
     {
         Color targetColor = new Color(0.6f, 0.3f, 0.2f, 0.8f); // Красно-коричневый с прозрачностью
