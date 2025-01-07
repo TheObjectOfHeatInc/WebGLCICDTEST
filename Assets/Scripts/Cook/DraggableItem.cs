@@ -5,13 +5,24 @@ namespace Cook
 {
     public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [SerializeField]private RectTransform _rectTransform;
+        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private CanvasGroup _canvasGroup;
         private Vector2 _originalPosition;
+        private DropZone _dropZone;
 
+        void Start()
+        {
+            _dropZone = GameObject.Find("Bottom").GetComponent<DropZone>();
+        }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             _originalPosition = _rectTransform.anchoredPosition;
+            _canvasGroup.blocksRaycasts = false;
+            if (_dropZone != null)
+            {
+                _dropZone.SetDraggingState(true);
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -21,8 +32,11 @@ namespace Cook
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            // Вернуть объект на исходную позицию, если нужно
-            // _rectTransform.anchoredPosition = _originalPosition;
+            _canvasGroup.blocksRaycasts = true;
+            if (_dropZone != null)
+            {
+                _dropZone.SetDraggingState(false);
+            }
         }
 
         private float GetCanvasScaleFactor()
