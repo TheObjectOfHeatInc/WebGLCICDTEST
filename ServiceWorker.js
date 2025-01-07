@@ -1,4 +1,4 @@
-const cacheName = "GreegCompany-WebGLCICDTEST-0.0.20";
+const cacheName = "GreegCompany-WebGLCICDTEST-0.0.22";
 const contentToCache = [
     "Build/WebGL.loader.js",
     "Build/WebGL.framework.js",
