@@ -28,6 +28,7 @@
         productVersion: "1.0",
       };
       const canvas = document.querySelector("#unity-canvas");
+      let gameInstance;
 
       // Функция для отправки данных Telegram в Unity
       function sendTelegramDataToUnity() {
@@ -46,6 +47,7 @@
         })
           .then((unityInstance) => {
             console.log("Unity instance created");
+            gameInstance = unityInstance;
             sendTelegramDataToUnity(); // Отправка данных в Unity после создания инстанса
           })
           .catch((message) => {
