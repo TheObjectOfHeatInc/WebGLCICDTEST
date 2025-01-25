@@ -1,32 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-us">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My WebGL Game</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>My Unity WebGL Game</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="Build/WebGL.loader.js"></script>
+    <!-- Подключение Telegram Web App SDK -->
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+    </div>
     <script>
-      function showInitData() {
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/Build.loader.js"; // Убедитесь, что путь правильный
+      const config = {
+        dataUrl: buildUrl + "/Build.data", // Убедитесь, что путь правильный
+        frameworkUrl: buildUrl + "/Build.framework.js", // Убедитесь, что путь правильный
+        codeUrl: buildUrl + "/Build.wasm", // Убедитесь, что путь правильный
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Your Company",
+        productName: "Your Product",
+        productVersion: "1.0",
+      };
+
+      const canvas = document.querySelector("#unity-canvas");
+
+      // Функция для отправки данных Telegram в Unity
+      function sendTelegramDataToUnity() {
         const initData = window.Telegram.WebApp.initData;
         const userData = window.Telegram.WebApp.initDataUnsafe.user;
 
-        SendMessageToUnity(initData);
-      }
-
-      function SendMessageToUnity(initData) {
+        // Предполагается, что в Unity есть объект и метод для обработки данных
         gameInstance.SendMessage("Authorization", "SetInitData", initData);
       }
-    </script>
-  </head>
-  <body onload="showInitData()">
-    <div id="unityContainer" style="width: 960px; height: 600px"></div>
-    <script>
-      var gameInstance = UnityLoader.instantiate(
-        "unityContainer",
-        "Build/Build.json",
-        { onProgress: UnityProgress }
-      );
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          console.log(`Loading progress: ${progress * 100}%`);
+        })
+          .then((unityInstance) => {
+            console.log("Unity instance created");
+            sendTelegramDataToUnity(); // Отправка данных в Unity после создания инстанса
+          })
+          .catch((message) => {
+            alert(message);
+          });
+      };
+      document.body.appendChild(script);
     </script>
   </body>
 </html>
