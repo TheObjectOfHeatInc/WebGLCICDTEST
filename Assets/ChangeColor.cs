@@ -12,7 +12,6 @@ public class ChangeColor : MonoBehaviour
     void Start()
     {
         imageComponent = GetComponent<Image>();
-        
     }
 
     void Update()
@@ -23,8 +22,8 @@ public class ChangeColor : MonoBehaviour
             CheckClick();
         }
 
-        // Проверяем тач для мобильных устройств
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        // Проверяем отпускание пальца для мобильных устройств
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
             CheckClick();
         }

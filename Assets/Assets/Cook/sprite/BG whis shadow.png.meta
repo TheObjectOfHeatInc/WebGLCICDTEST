@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BG whis shadow_0: -8777359093039641289
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
