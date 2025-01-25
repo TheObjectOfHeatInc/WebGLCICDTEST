@@ -6,9 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
-    <title>My Unity WebGL Game</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
-    <link rel="stylesheet" href="TemplateData/style.css" />
+    <title>My Unity WebGL Game v2</title>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Подключение Telegram Web App SDK -->
   </head>
@@ -18,16 +17,7 @@
     </div>
     <script>
       const buildUrl = "Build";
-      const loaderUrl = buildUrl + "/Build.loader.js"; // Убедитесь, что путь правильный
-      const config = {
-        dataUrl: buildUrl + "/Build.data", // Убедитесь, что путь правильный
-        frameworkUrl: buildUrl + "/Build.framework.js", // Убедитесь, что путь правильный
-        codeUrl: buildUrl + "/Build.wasm", // Убедитесь, что путь правильный
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Your Company",
-        productName: "Your Product",
-        productVersion: "1.0",
-      };
+      const loaderUrl = buildUrl + "/WebGL.loader.js"; // Убедитесь, что путь правильный
 
       const canvas = document.querySelector("#unity-canvas");
 
