@@ -32,7 +32,8 @@
       // Функция для отправки данных Telegram в Unity
       function sendTelegramDataToUnity() {
         const initData = window.Telegram.WebApp.initData;
-        const userData = window.Telegram.WebApp.initDataUnsafe.user;
+
+        alert(initData);
 
         // Предполагается, что в Unity есть объект и метод для обработки данных
         gameInstance.SendMessage("Authorization", "SetInitData", initData);
