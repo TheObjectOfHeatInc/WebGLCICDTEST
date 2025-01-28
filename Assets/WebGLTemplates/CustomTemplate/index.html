@@ -32,6 +32,7 @@
       // Функция для отправки данных Telegram в Unity
       function sendTelegramDataToUnity() {
         const initData = window.Telegram.WebApp.initData;
+        console.log("Sending Telegram data to Unity...", initData);
 
         alert(initData);
 
