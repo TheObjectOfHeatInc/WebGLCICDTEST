@@ -30,6 +30,7 @@ public class Authorization : MonoBehaviour
     public int currentScore;
 
     // Метод для установки initData из JavaScript
+    
     public void SetInitData(string initData)
     {
         if (!string.IsNullOrEmpty(initData))
