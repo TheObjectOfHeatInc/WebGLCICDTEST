@@ -6,11 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
-    <title>My Unity WebGL Game v2</title>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>My Game v3</title>
   </head>
+
   <body>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas"></canvas>
     </div>
@@ -22,23 +23,8 @@
         frameworkUrl: buildUrl + "/WebGL.framework.js",
         codeUrl: buildUrl + "/WebGL.wasm",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "WebGLGame",
-        productVersion: "1.0",
       };
       const canvas = document.querySelector("#unity-canvas");
-      let gameInstance;
-
-      // Функция для отправки данных Telegram в Unity
-      function sendTelegramDataToUnity() {
-        const initData = window.Telegram.WebApp.initData;
-        console.log("Sending Telegram data to Unity...", initData);
-
-        alert(initData);
-
-        // Предполагается, что в Unity есть объект и метод для обработки данных
-        gameInstance.SendMessage("Authorization", "SetInitData", initData);
-      }
 
       const script = document.createElement("script");
       script.src = loaderUrl;
@@ -48,14 +34,34 @@
         })
           .then((unityInstance) => {
             console.log("Unity instance created");
-            gameInstance = unityInstance;
-            sendTelegramDataToUnity(); // Отправка данных в Unity после создания инстанса
           })
           .catch((message) => {
             alert(message);
           });
       };
       document.body.appendChild(script);
+
+      function requestInitDataFromTelegram() {
+        if (window.Telegram && window.Telegram.WebApp) {
+          const initData = window.Telegram.WebApp.initData;
+          if (initData) {
+            // Вызываем метод Unity и передаем данные
+            if (typeof unityInstance !== "undefined") {
+              unityInstance.SendMessage(
+                "Authorization",
+                "SetInitData",
+                initData
+              );
+            } else {
+              console.error("Unity instance is not defined.");
+            }
+          } else {
+            console.error("Telegram WebApp initData is empty.");
+          }
+        } else {
+          console.error("Telegram WebApp is not available.");
+        }
+      }
     </script>
   </body>
 </html>
