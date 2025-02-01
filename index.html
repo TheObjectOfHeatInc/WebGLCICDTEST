@@ -45,6 +45,8 @@
       <canvas id="unity-canvas"></canvas>
     </div>
     <script>
+      let unityInstance;
+
       const buildUrl = "Build";
       const loaderUrl = buildUrl + "/WebGL.loader.js"; // Убедитесь, что путь правильный
       const config = {
@@ -61,7 +63,8 @@
         createUnityInstance(canvas, config, (progress) => {
           console.log(`Loading progress: ${progress * 100}%`);
         })
-          .then((unityInstance) => {
+          .then((instance) => {
+            unityInstance = instance;
             console.log("Unity instance created");
           })
           .catch((message) => {
