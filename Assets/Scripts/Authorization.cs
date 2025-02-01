@@ -18,24 +18,29 @@ public class AuthResponse
 }
 
 
-
 public class Authorization : MonoBehaviour
 {
-    [SerializeField]private TextMeshProUGUI scoreText;
-    [SerializeField]private TextMeshProUGUI playerID;
-    private const string AUTH_URL = "https://api.lehagigachad.ru/auth";
-    private AuthRequest authData;
-    
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI playerID;
+    private const string AuthURL = "https://api.lehagigachad.ru/auth";
+    private AuthRequest _authData;
+
     public string currentToken;
     public int currentScore;
 
-    // Метод для установки initData из JavaScript
-    
+    // Метод для запроса initData из JavaScript
+    public void RequestInitData()
+    {
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        Application.ExternalCall("requestInitDataFromTelegram");
+        #endif
+    }
+
     public void SetInitData(string initData)
     {
         if (!string.IsNullOrEmpty(initData))
         {
-            authData = new AuthRequest { initData = initData };
+            _authData = new AuthRequest { initData = initData };
             StartCoroutine(AuthenticateUser());
         }
         else
@@ -46,15 +51,15 @@ public class Authorization : MonoBehaviour
 
     private IEnumerator AuthenticateUser()
     {
-        if (authData == null)
+        if (_authData == null)
         {
             Debug.LogError("Auth data is not set.");
             yield break;
         }
 
-        string jsonData = JsonUtility.ToJson(authData);
+        string jsonData = JsonUtility.ToJson(_authData);
 
-        using (UnityWebRequest request = new UnityWebRequest(AUTH_URL, "POST"))
+        using (UnityWebRequest request = new UnityWebRequest(AuthURL, "POST"))
         {
             request.certificateHandler = new BypassCertificate();
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
@@ -67,14 +72,14 @@ public class Authorization : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 AuthResponse response = JsonUtility.FromJson<AuthResponse>(request.downloadHandler.text);
-                
+
                 if (response.success)
                 {
                     currentToken = response.token;
                     currentScore = response.score;
                     Debug.Log($"Авторизация успешна! Токен: {currentToken}, Счёт: {currentScore}");
-                    scoreText.text = currentScore.ToString();       
-                    playerID.text =  currentToken.ToString();     
+                    scoreText.text = currentScore.ToString();
+                    playerID.text = currentToken.ToString();
                 }
                 else
                 {
@@ -98,6 +103,7 @@ public class Authorization : MonoBehaviour
         return currentScore;
     }
 }
+
 
 public class BypassCertificate : CertificateHandler
 {
