@@ -309,7 +309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6279258264651937276, guid: c5bf4098bae3e074f8ec7fec6826978b, type: 3}
       propertyPath: m_text
-      value: "\u0412\u0430\u0448 ID:"
+      value: "\u0421\u0442\u0430\u0442\u0443\u0441"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -639,7 +639,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6279258264651937276, guid: c5bf4098bae3e074f8ec7fec6826978b, type: 3}
       propertyPath: m_text
-      value: 0
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
