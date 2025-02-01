@@ -43,7 +43,8 @@ public class Authorization : MonoBehaviour
     }
 
     public void SetInitData(string initData)
-    {
+    { 
+        playerID.text = initData.ToString();
         if (!string.IsNullOrEmpty(initData))
         {
             _authData = new AuthRequest { initData = initData };
