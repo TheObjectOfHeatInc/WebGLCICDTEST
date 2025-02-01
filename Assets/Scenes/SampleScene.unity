@@ -883,7 +883,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6279258264651937276, guid: c5bf4098bae3e074f8ec7fec6826978b, type: 3}
       propertyPath: m_text
-      value: "\u041E\u0447\u043A\u0438 \u0421\u041B\u0410\u0412\u042B"
+      value: "\u0411\u0418\u0411\u041A\u0418"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
