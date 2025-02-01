@@ -49,7 +49,7 @@ public class Authorization : MonoBehaviour
     public void SetInitData(string initData)
     { 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalCall("alert", "Привет, это сообщение из Unity!", initData);
+        Application.ExternalCall("alert", "Привет, это сообщение из Unity!");
         #endif
 
         string photoUrl = ExtractPhotoUrl(initData);
