@@ -49,14 +49,14 @@ public class Authorization : MonoBehaviour
     public void SetInitData(string initData)
     { 
         #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalCall("alert", "Привет, это сообщение из Unity!");
+        Application.ExternalCall("alert", initData);
         #endif
 
-        string photoUrl = ExtractPhotoUrl(initData);
-        if (!string.IsNullOrEmpty(photoUrl))
-        {
-                StartCoroutine(LoadImageFromUrl(photoUrl));
-        }
+        // string photoUrl = ExtractPhotoUrl(initData);
+        // if (!string.IsNullOrEmpty(photoUrl))
+        // {
+        //         StartCoroutine(LoadImageFromUrl(photoUrl));
+        // }
 
         if (!string.IsNullOrEmpty(initData))
         {
@@ -69,49 +69,49 @@ public class Authorization : MonoBehaviour
         }
     }
 
-    private string ExtractPhotoUrl(string initData)
-    {
-        // Разделяем строку на пары ключ-значение
-        var keyValuePairs = initData.Split('&');
-        foreach (var pair in keyValuePairs)
-        {
-            var keyValue = pair.Split('=');
-            if (keyValue[0] == "photo_url")
-            {
-                // Декодируем URL-encoded значение
-                return UnityWebRequest.UnEscapeURL(keyValue[1]);
-            }
-        }
-        return null;
-    }
+    // private string ExtractPhotoUrl(string initData)
+    // {
+    //     // Разделяем строку на пары ключ-значение
+    //     var keyValuePairs = initData.Split('&');
+    //     foreach (var pair in keyValuePairs)
+    //     {
+    //         var keyValue = pair.Split('=');
+    //         if (keyValue[0] == "photo_url")
+    //         {
+    //             // Декодируем URL-encoded значение
+    //             return UnityWebRequest.UnEscapeURL(keyValue[1]);
+    //         }
+    //     }
+    //     return null;
+    // }
 
-     private IEnumerator LoadImageFromUrl(string url)
-    {
-        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
-        {
-            yield return request.SendWebRequest();
+    //  private IEnumerator LoadImageFromUrl(string url)
+    // {
+    //     using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
+    //     {
+    //         yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                // Получаем текстуру из запроса
-                Texture2D texture = DownloadHandlerTexture.GetContent(request);
+    //         if (request.result == UnityWebRequest.Result.Success)
+    //         {
+    //             // Получаем текстуру из запроса
+    //             Texture2D texture = DownloadHandlerTexture.GetContent(request);
 
-                // Создаем спрайт из текстуры
-                Sprite sprite = Sprite.Create(
-                    texture,
-                    new Rect(0, 0, texture.width, texture.height),
-                    new Vector2(0.5f, 0.5f)
-                );
+    //             // Создаем спрайт из текстуры
+    //             Sprite sprite = Sprite.Create(
+    //                 texture,
+    //                 new Rect(0, 0, texture.width, texture.height),
+    //                 new Vector2(0.5f, 0.5f)
+    //             );
 
-                // Устанавливаем спрайт в Image
-                userImage.sprite = sprite;
-            }
-            else
-            {
-                Debug.LogError("Failed to load image: " + request.error);
-            }
-        }
-    }
+    //             // Устанавливаем спрайт в Image
+    //             userImage.sprite = sprite;
+    //         }
+    //         else
+    //         {
+    //             Debug.LogError("Failed to load image: " + request.error);
+    //         }
+    //     }
+    // }
 
     private IEnumerator AuthenticateUser()
     {
