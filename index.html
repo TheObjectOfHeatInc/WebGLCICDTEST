@@ -7,11 +7,40 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
     <title>My Game v3</title>
-  </head>
+    <style>
+      /* Убираем отступы по умолчанию */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Убираем скролл */
+      }
 
-  <body>
+      /* Контейнер для Unity */
+      #unity-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: black; /* Фон, если нужно */
+      }
+
+      /* Canvas для Unity */
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+        background: black; /* Фон, если нужно */
+      }
+    </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
+  </head>
+  <body>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas"></canvas>
     </div>
@@ -45,7 +74,6 @@
         if (window.Telegram && window.Telegram.WebApp) {
           const initData = window.Telegram.WebApp.initData;
           if (initData) {
-            // Вызываем метод Unity и передаем данные
             if (typeof unityInstance !== "undefined") {
               unityInstance.SendMessage(
                 "Authorization",
