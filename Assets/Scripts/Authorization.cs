@@ -48,9 +48,6 @@ public class Authorization : MonoBehaviour
 
     public void SetInitData(string initData)
     { 
-        #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalCall("alert", initData);
-        #endif
 
         // string photoUrl = ExtractPhotoUrl(initData);
         // if (!string.IsNullOrEmpty(photoUrl))
@@ -60,7 +57,7 @@ public class Authorization : MonoBehaviour
 
         if (!string.IsNullOrEmpty(initData))
         {
-            _authData = new AuthRequest { initData = initData };
+            _authData = new AuthRequest { initData = initData.ToString() };
             StartCoroutine(AuthenticateUser());
         }
         else
@@ -120,6 +117,7 @@ public class Authorization : MonoBehaviour
             Debug.LogError("Auth data is not set.");
             yield break;
         }
+
 
         string jsonData = JsonUtility.ToJson(_authData);
 
