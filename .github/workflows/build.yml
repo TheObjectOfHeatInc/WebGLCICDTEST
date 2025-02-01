@@ -32,7 +32,7 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: -webGLCompressionFormat Disabled
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download WebGL Build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Build-WebGL
           path: temp-build
