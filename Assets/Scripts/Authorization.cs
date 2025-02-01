@@ -29,6 +29,12 @@ public class Authorization : MonoBehaviour
     public int currentScore;
 
     // Метод для запроса initData из JavaScript
+
+    private void Start()
+    {
+        RequestInitData();
+    }
+    
     public void RequestInitData()
     {
         #if UNITY_WEBGL && !UNITY_EDITOR
