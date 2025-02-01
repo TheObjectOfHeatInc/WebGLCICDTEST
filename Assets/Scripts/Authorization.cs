@@ -136,12 +136,11 @@ public class Authorization : MonoBehaviour
                 AuthResponse response = JsonUtility.FromJson<AuthResponse>(request.downloadHandler.text);
 
                 if (response.success)
-                {
-                    currentToken = response.token;
+                {                 
                     currentScore = response.score;
                     Debug.Log($"Авторизация успешна! Токен: {currentToken}, Счёт: {currentScore}");
                     scoreText.text = currentScore.ToString();
-                    playerID.text = currentToken.ToString();
+                    playerID.text = response.success? "Подключился" : "Ошибка";
                 }
                 else
                 {
