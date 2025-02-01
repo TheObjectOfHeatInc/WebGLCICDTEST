@@ -73,7 +73,7 @@
       function requestInitDataFromTelegram() {
         if (window.Telegram && window.Telegram.WebApp) {
           const initData = window.Telegram.WebApp.initData;
-          alert(initData);
+
           if (initData) {
             if (typeof unityInstance !== "undefined") {
               unityInstance.SendMessage(
