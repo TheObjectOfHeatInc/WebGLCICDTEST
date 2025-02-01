@@ -693,6 +693,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 3810878267458328597}
   playerID: {fileID: 649044542}
+  userImage: {fileID: 143449671}
   currentToken: 
   currentScore: 0
 --- !u!4 &979851159
