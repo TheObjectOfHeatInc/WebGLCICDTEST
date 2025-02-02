@@ -79,11 +79,7 @@
 
           if (initData) {
             if (typeof unityInstance !== "undefined") {
-              unityInstance.SendMessage(
-                "AuthorizationObject",
-                "SetInitData",
-                initData
-              );
+              unityInstance.SendMessage("GameManager", "SetInitData", initData);
             } else {
               console.error("Unity instance is not defined.");
             }
