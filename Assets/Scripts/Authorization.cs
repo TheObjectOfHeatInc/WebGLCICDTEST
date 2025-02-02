@@ -40,10 +40,8 @@ public class Authorization : MonoBehaviour
         #endif
     }
 
-    [System.Obsolete]
     public void SetInitData(string initData)
     {
-        Application.ExternalEval($"alert('initData: {initData}');");
         string photoUrl = ExtractPhotoUrl(initData);
         if (!string.IsNullOrEmpty(photoUrl))
         {
@@ -90,26 +88,28 @@ public class Authorization : MonoBehaviour
 
     private IEnumerator LoadImageFromUrl(string url)
     {
-        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
-        {
-            yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                Texture2D texture = DownloadHandlerTexture.GetContent(request);
-                Sprite sprite = Sprite.Create(
-                    texture,
-                    new Rect(0, 0, texture.width, texture.height),
-                    new Vector2(0.5f, 0.5f)
-                );
-                userImage.sprite = sprite;
-            }
-            else
-            {
-                Debug.LogError("Failed to load image: " + request.error);
-            }
+        using UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        request.SetRequestHeader("Access-Control-Allow-Origin", "*"); // Добавляем заголовок
+        request.downloadHandler = new DownloadHandlerTexture(true); // Разрешаем загрузку без проверки CORS
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Texture2D texture = DownloadHandlerTexture.GetContent(request);
+            Sprite sprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f)
+            );
+            userImage.sprite = sprite;
+        }
+        else
+        {
+            Debug.LogError("Failed to load image: " + request.error);
         }
     }
+
 
     private IEnumerator AuthenticateUser()
     {
