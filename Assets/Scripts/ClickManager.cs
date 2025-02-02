@@ -19,10 +19,6 @@ public class ClickManager : MonoBehaviour
             Debug.LogError("Authorization component not found!");
             return;
         }
-
-        // Инициализируем счетчик кликов из текущего счета
-        _clickCount = _authorization.GetScore();
-        UpdateClickCountText(_clickCount); // Обновляем текст на экране
     }
 
     private void Update()

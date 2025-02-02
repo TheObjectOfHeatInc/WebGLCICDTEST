@@ -28,7 +28,7 @@ public class Authorization : MonoBehaviour
     public string currentToken;
     public int currentScore;
 
-    private void Awake()
+    private void Start()
     {
         RequestInitData();
     }
@@ -40,8 +40,10 @@ public class Authorization : MonoBehaviour
         #endif
     }
 
+    [System.Obsolete]
     public void SetInitData(string initData)
     {
+        Application.ExternalEval($"alert('initData: {initData}');");
         string photoUrl = ExtractPhotoUrl(initData);
         if (!string.IsNullOrEmpty(photoUrl))
         {
