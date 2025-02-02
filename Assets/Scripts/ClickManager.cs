@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ClickManager : MonoBehaviour
 {
-    private Authorization _authorization;
+    [SerializeField]private Authorization _authorization;
     private int _clickCount = 0; // Локальное количество кликов
     [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
@@ -13,8 +13,7 @@ public class ClickManager : MonoBehaviour
 
     private void Start()
     {
-        // Находим компонент Authorization
-        _authorization = FindObjectOfType<Authorization>();
+
         if (_authorization == null)
         {
             Debug.LogError("Authorization component not found!");

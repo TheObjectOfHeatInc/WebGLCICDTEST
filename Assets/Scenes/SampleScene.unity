@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ddffd022baced74ebfe1a9ee566133d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _authorization: {fileID: 47950549}
   clickCountText: {fileID: 3810878267458328597}
   targetObject: {fileID: 143449668}
 --- !u!114 &47950551
