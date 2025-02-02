@@ -45,7 +45,9 @@ public class Authorization : MonoBehaviour
         string photoUrl = ExtractPhotoUrl(initData);
         if (!string.IsNullOrEmpty(photoUrl))
         {
-            StartCoroutine(LoadImageFromUrl(photoUrl));
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            Application.ExternalCall("loadImage", photoUrl, "OnImageLoaded");
+            #endif
         }
 
         if (!string.IsNullOrEmpty(initData))
@@ -56,6 +58,26 @@ public class Authorization : MonoBehaviour
         else
         {
             Debug.LogWarning("InitData is empty or null.");
+        }
+    }
+
+    public void OnImageLoaded(string base64Image)
+    {
+        if (!string.IsNullOrEmpty(base64Image))
+        {
+            byte[] imageData = System.Convert.FromBase64String(base64Image.Split(',')[1]);
+            Texture2D texture = new Texture2D(1, 1);
+            texture.LoadImage(imageData);
+            Sprite sprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f)
+            );
+            userImage.sprite = sprite;
+        }
+        else
+        {
+            Debug.LogError("Failed to load image");
         }
     }
 
@@ -86,31 +108,6 @@ public class Authorization : MonoBehaviour
         return decodedUrl;
     }
 
-    private IEnumerator LoadImageFromUrl(string url)
-    {
-
-        using UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        request.SetRequestHeader("Access-Control-Allow-Origin", "*"); // Добавляем заголовок
-        request.downloadHandler = new DownloadHandlerTexture(true); // Разрешаем загрузку без проверки CORS
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Texture2D texture = DownloadHandlerTexture.GetContent(request);
-            Sprite sprite = Sprite.Create(
-                texture,
-                new Rect(0, 0, texture.width, texture.height),
-                new Vector2(0.5f, 0.5f)
-            );
-            userImage.sprite = sprite;
-        }
-        else
-        {
-            Debug.LogError("Failed to load image: " + request.error);
-        }
-    }
-
-
     private IEnumerator AuthenticateUser()
     {
         if (_authData == null)
@@ -132,7 +129,7 @@ public class Authorization : MonoBehaviour
             currentToken = response.token;
             currentScore = response.score;
             scoreText.text = currentScore.ToString();
-            playerID.text = response.success ? "Подключился" : "Ошибка";
+            playerID.text = response.success ? "Подключился2" : "Ошибка";
         }
         else
         {
