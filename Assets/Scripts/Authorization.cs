@@ -18,42 +18,35 @@ public class AuthResponse
     public int score;
 }
 
-
 public class Authorization : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI playerID;
     [SerializeField] private Image userImage;
-    private const string AuthURL = "https://api.lehagigachad.ru/auth";
     private AuthRequest _authData;
 
     public string currentToken;
     public int currentScore;
 
-    // Метод для запроса initData из JavaScript
-
-    private void Start()
+    private void Awake()
     {
-
         RequestInitData();
+        SetInitData("query_id=AAHrjK8IAAAAAOuMrwi1lGj0&user=%7B%22id%22%3A145722603%2C%22first_name%22%3A%22%D0%95%D0%B3%D0%BE%D1%80%22%2C%22last_name%22%3A%22%D0%91%D0%BE%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%22%2C%22username%22%3A%22GregCooper%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2F3ZsEAJfiHm2WGMYNHLONv9YHdGoLQkifYrXUYoM2sVI.svg%22%7D&auth_date=1738451246&signature=nH0x453t2dZ-aBVXMrVvf2Ng8Uj8pyXVzXUAysfTFhUrOa7ZxKrNtYEXrSABwhTOKgC-pXSxeSC88lydy8yGAA&hash=d6f1c0dd9ee5ecedc55edd4d66fd465d6aa60087919e5058b67be63b349cbf49");
     }
-    
+
     public void RequestInitData()
     {
-
         #if UNITY_WEBGL && !UNITY_EDITOR
         Application.ExternalCall("requestInitDataFromTelegram");
         #endif
     }
 
     public void SetInitData(string initData)
-    { 
-
+    {
         string photoUrl = ExtractPhotoUrl(initData);
-        Debug.Log(photoUrl);
         if (!string.IsNullOrEmpty(photoUrl))
         {
-                StartCoroutine(LoadImageFromUrl(photoUrl));
+            StartCoroutine(LoadImageFromUrl(photoUrl));
         }
 
         if (!string.IsNullOrEmpty(initData))
@@ -69,50 +62,32 @@ public class Authorization : MonoBehaviour
 
     private string ExtractPhotoUrl(string initData)
     {
-    // Ищем начало строки "https"
-    int httpsStartIndex = initData.IndexOf("https");
-    if (httpsStartIndex == -1)
-    {
-        return null; // Если "https" не найден
+        int httpsStartIndex = initData.IndexOf("https");
+        if (httpsStartIndex == -1)
+        {
+            return null;
+        }
+
+        string photoUrlPart = initData.Substring(httpsStartIndex);
+        int nextAmpersandIndex = photoUrlPart.IndexOf('&');
+        string photoUrlEncoded = nextAmpersandIndex == -1 ? photoUrlPart : photoUrlPart.Substring(0, nextAmpersandIndex);
+        string photoUrl = DecodeUrl(photoUrlEncoded);
+
+        return photoUrl;
     }
-
-    // Извлекаем часть строки, начиная с "https"
-    string photoUrlPart = initData.Substring(httpsStartIndex);
-
-    // Ищем следующий разделитель & или конец строки
-    int nextAmpersandIndex = photoUrlPart.IndexOf('&');
-    string photoUrlEncoded = nextAmpersandIndex == -1 ? photoUrlPart : photoUrlPart.Substring(0, nextAmpersandIndex);
-
-    // Декодируем URL и убираем лишние символы
-    string photoUrl = DecodeUrl(photoUrlEncoded);
-
-    return photoUrl;
-    }   
 
     private string DecodeUrl(string encodedUrl)
     {
-    // Декодируем URL
-    string decodedUrl = UnityWebRequest.UnEscapeURL(encodedUrl);
-
-    // Заменяем обратные слэши на обычные слэши
-    decodedUrl = decodedUrl.Replace("\\/", "/");
-
-    // Убираем лишние символы в конце
-    if (decodedUrl.EndsWith("\"}"))
-    {
-        decodedUrl = decodedUrl.Substring(0, decodedUrl.Length - 2);
+        string decodedUrl = UnityWebRequest.UnEscapeURL(encodedUrl);
+        decodedUrl = decodedUrl.Replace("\\/", "/");
+        if (decodedUrl.EndsWith("\"}"))
+        {
+            decodedUrl = decodedUrl.Substring(0, decodedUrl.Length - 2);
+        }
+        return decodedUrl;
     }
 
-    return decodedUrl;
-    }
-
-
-
-
-
-
-
-     private IEnumerator LoadImageFromUrl(string url)
+    private IEnumerator LoadImageFromUrl(string url)
     {
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
         {
@@ -120,17 +95,12 @@ public class Authorization : MonoBehaviour
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                // Получаем текстуру из запроса
                 Texture2D texture = DownloadHandlerTexture.GetContent(request);
-
-                // Создаем спрайт из текстуры
                 Sprite sprite = Sprite.Create(
                     texture,
                     new Rect(0, 0, texture.width, texture.height),
                     new Vector2(0.5f, 0.5f)
                 );
-
-                // Устанавливаем спрайт в Image
                 userImage.sprite = sprite;
             }
             else
@@ -148,40 +118,30 @@ public class Authorization : MonoBehaviour
             yield break;
         }
 
-
         string jsonData = JsonUtility.ToJson(_authData);
+        yield return WebApiManager.Instance.AuthenticateUser(jsonData, OnAuthSuccess, OnAuthError);
+    }
 
-        using (UnityWebRequest request = new UnityWebRequest(AuthURL, "POST"))
+    private void OnAuthSuccess(string responseJson)
+    {
+        AuthResponse response = JsonUtility.FromJson<AuthResponse>(responseJson);
+
+        if (response.success)
         {
-            request.certificateHandler = new BypassCertificate();
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                AuthResponse response = JsonUtility.FromJson<AuthResponse>(request.downloadHandler.text);
-
-                if (response.success)
-                {                 
-                    currentScore = response.score;
-                    Debug.Log($"Авторизация успешна! Токен: {currentToken}, Счёт: {currentScore}");
-                    scoreText.text = currentScore.ToString();
-                    playerID.text = response.success? "Подключился" : "Ошибка";
-                }
-                else
-                {
-                    Debug.LogError("Ошибка авторизации: Сервер вернул success = false");
-                }
-            }
-            else
-            {
-                Debug.LogError($"Ошибка запроса: {request.error}");
-            }
+            currentToken = response.token;
+            currentScore = response.score;
+            scoreText.text = currentScore.ToString();
+            playerID.text = response.success ? "Подключился" : "Ошибка";
         }
+        else
+        {
+            Debug.LogError("Ошибка авторизации: Сервер вернул success = false");
+        }
+    }
+
+    private void OnAuthError(string error)
+    {
+        Debug.LogError($"Ошибка запроса: {error}");
     }
 
     public string GetToken()
@@ -192,14 +152,5 @@ public class Authorization : MonoBehaviour
     public int GetScore()
     {
         return currentScore;
-    }
-}
-
-
-public class BypassCertificate : CertificateHandler
-{
-    protected override bool ValidateCertificate(byte[] certificateData)
-    {
-        return true;
     }
 }
