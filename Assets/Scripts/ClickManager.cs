@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClickManager : MonoBehaviour
 {
@@ -8,12 +9,13 @@ public class ClickManager : MonoBehaviour
     private int _clickCount = 0; // Локальное количество кликов
     [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
+    [SerializeField] private Button clickZoneButton; //Кнопка на объекте выше
     private Coroutine _scaleAnimationCoroutine; // Корутина для анимации масштабирования
     private Coroutine _countAnimationCoroutine; // Корутина для анимации числа кликов
 
     private void Start()
     {
-
+        clickZoneButton.onClick.AddListener(HandleClick);
         if (_authorization == null)
         {
             Debug.LogError("Authorization component not found!");
@@ -21,23 +23,6 @@ public class ClickManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Обработка клика мышью (для ПК) или тапа (для мобильных устройств)
-        if (Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.gameObject == targetObject)
-                {
-                    HandleClick();
-                }
-            }    
-            
-        }
-    }
 
     private void HandleClick()
     {
