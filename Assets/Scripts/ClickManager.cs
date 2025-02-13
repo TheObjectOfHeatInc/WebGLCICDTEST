@@ -26,7 +26,16 @@ public class ClickManager : MonoBehaviour
         // Обработка клика мышью (для ПК) или тапа (для мобильных устройств)
         if (Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended))
         {
-            HandleClick();
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == targetObject)
+                {
+                    HandleClick();
+                }
+            }    
+            
         }
     }
 

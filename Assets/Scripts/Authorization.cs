@@ -23,6 +23,7 @@ public class Authorization : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI playerID;
     [SerializeField] private Image userImage;
+    [SerializeField] private GameObject LoadingPanel;
     private AuthRequest _authData;
 
     public string currentToken;
@@ -36,6 +37,7 @@ public class Authorization : MonoBehaviour
     public void RequestInitData()
     {
         #if UNITY_WEBGL && !UNITY_EDITOR
+        LoadingPanel.SetActive(true);       
         Application.ExternalCall("requestInitDataFromTelegram");
         #endif
     }
@@ -118,6 +120,7 @@ public class Authorization : MonoBehaviour
 
         string jsonData = JsonUtility.ToJson(_authData);
         yield return WebApiManager.Instance.AuthenticateUser(jsonData, OnAuthSuccess, OnAuthError);
+        LoadingPanel.SetActive(false);
     }
 
     private void OnAuthSuccess(string responseJson)
