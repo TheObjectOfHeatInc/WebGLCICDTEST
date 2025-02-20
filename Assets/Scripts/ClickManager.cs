@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class ClickManager : MonoBehaviour
 {
-    [SerializeField]private Authorization _authorization;
+    [SerializeField] private Authorization _authorization;
     private int _clickCount = 0; // Локальное количество кликов
     [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
-    [SerializeField] private Button clickZoneButton; //Кнопка на объекте выше
+    [SerializeField] private Button clickZoneButton; //Кнопка для обработки клика
     private Coroutine _scaleAnimationCoroutine; // Корутина для анимации масштабирования
     private Coroutine _countAnimationCoroutine; // Корутина для анимации числа кликов
 
