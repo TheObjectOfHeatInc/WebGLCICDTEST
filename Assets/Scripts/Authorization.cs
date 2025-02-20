@@ -24,6 +24,7 @@ public class Authorization : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerID;
     [SerializeField] private Image userImage;
     [SerializeField] private GameObject LoadingPanel;
+    [SerializeField] private AfterAuthorization afterAuthorization;
     private AuthRequest _authData;
 
     public string currentToken;
@@ -115,6 +116,7 @@ public class Authorization : MonoBehaviour
         if (_authData == null)
         {
             Debug.LogError("Auth data is not set.");
+    
             yield break;
         }
 
@@ -133,16 +135,19 @@ public class Authorization : MonoBehaviour
             currentScore = response.score;
             scoreText.text = currentScore.ToString();
             playerID.text = response.success ? "Подключился2" : "Ошибка";
+            afterAuthorization.OpenAfterAuthorization();
         }
         else
         {
             Debug.LogError("Ошибка авторизации: Сервер вернул success = false");
+            afterAuthorization.OpenFail();
         }
     }
 
     private void OnAuthError(string error)
     {
         Debug.LogError($"Ошибка запроса: {error}");
+        afterAuthorization.OpenFail();
     }
 
     public string GetToken()
