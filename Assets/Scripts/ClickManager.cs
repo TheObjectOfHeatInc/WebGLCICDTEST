@@ -8,6 +8,7 @@ public class ClickManager : MonoBehaviour
     [SerializeField] private Authorization _authorization;
     private int _clickCount = 0; // Серверное количество кликов
     private int _localClickCount = 0; // Локальное количество кликов
+    private int _pendingClicks = 0; // Количество кликов, ожидающих подтверждения от сервера
     [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения серверных кликов
     [SerializeField] private TextMeshProUGUI clickCountLocalText; // Текстовый элемент для локальных кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
@@ -23,17 +24,23 @@ public class ClickManager : MonoBehaviour
             Debug.LogError("Authorization component not found!");
             return;
         }
-        //костыль
-        bool crutch = int.TryParse(clickCountText.text, out _clickCount);
     }
 
 
     private void HandleClick()
     {
-        _clickCount++; // Увеличиваемсчетчик кликов
+        if(_clickCount == 0)
+        {
+            //костыль
+            bool crutch = int.TryParse(clickCountText.text, out _clickCount);
+        }
+        _clickCount++; // Увеличиваем счетчики кликов
         _localClickCount++;
+        _pendingClicks++;
+
         StartCoroutine(SendClickToServer());
         clickCountLocalText.text = _localClickCount.ToString(); // Записываем локальный счетчик кликов
+
         // Запускаем анимацию масштабирования
         if (_scaleAnimationCoroutine != null)
         {
@@ -58,6 +65,7 @@ public class ClickManager : MonoBehaviour
         if (string.IsNullOrEmpty(token))
         {
             Debug.LogError("Token is not available!");
+            _pendingClicks--; // Уменьшаем счетчик ожидающих кликов при ошибке
             yield break;
         }
 
@@ -72,8 +80,9 @@ public class ClickManager : MonoBehaviour
 
         if (response.success)
         {
+            _pendingClicks--; // Уменьшаем счетчик ожидающих кликов
             // Синхронизируем локальный счетчик с серверным значением
-            if (_clickCount != response.totalScore)
+            if (_pendingClicks == 0 && _clickCount != response.totalScore)
             {
                 if (_countAnimationCoroutine != null)
                 {
@@ -81,18 +90,19 @@ public class ClickManager : MonoBehaviour
                 }
                 _countAnimationCoroutine = StartCoroutine(AnimateCountChange(_clickCount, response.totalScore));
             }
-
             _clickCount = response.totalScore; // Обновляем локальный счетчик
-            UpdateClickCountText(_clickCount); // Обновляем текст на экране
+            UpdateClickCountText(_clickCount); // Обновляем текст на экране            
         }
         else
         {
+            _pendingClicks--; // Уменьшаем счетчик даже при ошибке
             Debug.LogError("Failed to add score: Server returned success = false");
         }
     }
 
     private void OnScoreError(string error)
     {
+        _pendingClicks--; // Уменьшаем счетчик даже при ошибке
         Debug.LogError($"Failed to add score: {error}");
     }
 
