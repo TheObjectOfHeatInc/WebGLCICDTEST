@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class ClickManager : MonoBehaviour
 {
     [SerializeField] private Authorization _authorization;
-    private int _clickCount = 0; // Локальное количество кликов
-    [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения кликов
+    private int _clickCount = 0; // Серверное количество кликов
+    private int _localClickCount = 0; // Локальное количество кликов
+    [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения серверных кликов
     [SerializeField] private TextMeshProUGUI clickCountLocalText; // Текстовый элемент для локальных кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
     [SerializeField] private Button clickZoneButton; //Кнопка для обработки клика
@@ -22,15 +23,17 @@ public class ClickManager : MonoBehaviour
             Debug.LogError("Authorization component not found!");
             return;
         }
+        //костыль
+        bool crutch = int.TryParse(clickCountText.text, out _clickCount);
     }
 
 
     private void HandleClick()
     {
-        _clickCount++; // Увеличиваем локальный счетчик кликов
-        //UpdateClickCountText(_clickCount); // Обновляем текст на экране
+        _clickCount++; // Увеличиваемсчетчик кликов
+        _localClickCount++;
         StartCoroutine(SendClickToServer());
-        clickCountLocalText.text = _clickCount.ToString(); // Записываем локальный счетчик кликов
+        clickCountLocalText.text = _localClickCount.ToString(); // Записываем локальный счетчик кликов
         // Запускаем анимацию масштабирования
         if (_scaleAnimationCoroutine != null)
         {
@@ -80,6 +83,7 @@ public class ClickManager : MonoBehaviour
             }
 
             _clickCount = response.totalScore; // Обновляем локальный счетчик
+            UpdateClickCountText(_clickCount); // Обновляем текст на экране
         }
         else
         {
