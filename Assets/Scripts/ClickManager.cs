@@ -8,6 +8,7 @@ public class ClickManager : MonoBehaviour
     [SerializeField] private Authorization _authorization;
     private int _clickCount = 0; // Локальное количество кликов
     [SerializeField] private TextMeshProUGUI clickCountText; // Текстовый элемент для отображения кликов
+    [SerializeField] private TextMeshProUGUI clickCountLocalText; // Текстовый элемент для локальных кликов
     [SerializeField] private GameObject targetObject; // Объект для анимации
     [SerializeField] private Button clickZoneButton; //Кнопка для обработки клика
     private Coroutine _scaleAnimationCoroutine; // Корутина для анимации масштабирования
@@ -27,9 +28,9 @@ public class ClickManager : MonoBehaviour
     private void HandleClick()
     {
         _clickCount++; // Увеличиваем локальный счетчик кликов
-        UpdateClickCountText(_clickCount); // Обновляем текст на экране
+        //UpdateClickCountText(_clickCount); // Обновляем текст на экране
         StartCoroutine(SendClickToServer());
-
+        clickCountLocalText.text = _clickCount.ToString(); // Записываем локальный счетчик кликов
         // Запускаем анимацию масштабирования
         if (_scaleAnimationCoroutine != null)
         {
